@@ -14,7 +14,7 @@ deploy:
   provider: bintray
   file: bintray.json
   skip_cleanup: true
- user: vaughnvernon
+  user: vaughnvernon
   on:
     branch: master
   key:
