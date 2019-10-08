@@ -13,19 +13,23 @@ import io.vlingo.common.Completes;
 import io.vlingo.zoom.actors.TestRequestProtocol.TestResponseProtocol;
 
 public class TestResponseProtocolActor extends Actor implements TestResponseProtocol, Stoppable {
+  private final TestRequestProtocol requester;
   private int total;
 
   public TestResponseProtocolActor(final TestRequestProtocol requester) {
+    this.requester = requester;
     this.total = 0;
+  }
 
+  @Override
+  public void start() {
     requester.request(total, selfAs(TestResponseProtocol.class));
   }
 
   @Override
   public void response(final int value, final TestRequestProtocol requestOf) {
     if (value >= 10) {
-      requestOf.stop();
-      selfAs(Stoppable.class).stop();
+      total = value;
     } else {
       requestOf.request(value + 1, selfAs(TestResponseProtocol.class));
     }

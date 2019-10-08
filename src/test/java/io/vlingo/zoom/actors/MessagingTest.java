@@ -36,7 +36,7 @@ public class MessagingTest {
     final TestRequestProtocol requestOf = world.actorFor(TestRequestProtocol.class, TestRequestProtocolActor.class);
     final TestResponseProtocol respondTo = world.actorFor(TestResponseProtocol.class, TestResponseProtocolActor.class, requestOf);
 
-    respondTo.total().andThenConsume(value -> assertTrue(10 >= value));
+    respondTo.total().andThenConsume(value -> assertTrue(10 <= value));
   }
 
   @Before

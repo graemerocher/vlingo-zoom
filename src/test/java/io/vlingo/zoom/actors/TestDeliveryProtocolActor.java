@@ -8,6 +8,7 @@
 package io.vlingo.zoom.actors;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import io.vlingo.actors.Actor;
@@ -44,6 +45,6 @@ public class TestDeliveryProtocolActor extends Actor implements TestDeliveryProt
   @Override
   public Completes<List<String>> reactions() {
     logger().debug("reactions...");
-    return completes().with(reactions);
+    return completes().with(Collections.unmodifiableList(reactions));
   }
 }
