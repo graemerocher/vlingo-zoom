@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Stack;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import io.vlingo.actors.Actor;
@@ -21,11 +22,14 @@ import io.vlingo.actors.Message;
 public class BlockingMailbox implements Mailbox {
   public static final String Name = "blockingMailbox";
 
-  private boolean closed;
+  private final AtomicBoolean closed;
+  private final AtomicBoolean delivering;
   private final Queue<Message> queue;
-  private AtomicReference<Stack<List<Class<?>>>> suspendedOverrides;
+  private final AtomicReference<Stack<List<Class<?>>>> suspendedOverrides;
 
   public BlockingMailbox() {
+    this.closed = new AtomicBoolean(false);
+    this.delivering = new AtomicBoolean(false);
     this.queue = new ConcurrentLinkedQueue<>();
     this.suspendedOverrides = new AtomicReference<>(new Stack<>());
   }
@@ -37,17 +41,17 @@ public class BlockingMailbox implements Mailbox {
 
   @Override
   public void close() {
-    closed = true;
+    closed.set(true);
   }
 
   @Override
   public boolean isClosed() {
-    return closed;
+    return closed.get();
   }
 
   @Override
   public boolean isDelivering() {
-    throw new UnsupportedOperationException("BlockingMailbox does not support this operation.");
+    return delivering.get();
   }
 
   @Override
@@ -60,21 +64,28 @@ public class BlockingMailbox implements Mailbox {
     if (!suspendedOverrides.get().empty()) {
       suspendedOverrides.get().pop();
     }
-    resumeAll();
+    deliverAll();
   }
 
   @Override
   public void send(final Message message) {
-    try {
-      if (isSuspended()) {
-        queue.add(message);
-        return;
-      } else {
-        resumeAll();
-      }
+    if (isClosed()) return;
 
-      message.actor().viewTestStateInitialization(null);
-      message.deliver();
+    queue.add(message);
+
+    if (isSuspended()) {
+      return;
+    }
+
+    try {
+      boolean deliver = false;
+
+      while (deliver) {
+        if (delivering.compareAndSet(false, true)) {
+          while (deliverAll()) ;
+        }
+        deliver = false;
+      }
     } catch (Throwable t) {
       throw new RuntimeException(t.getMessage(), t);
     }
@@ -97,19 +108,24 @@ public class BlockingMailbox implements Mailbox {
 
   @Override
   public int pendingMessages() {
-    throw new UnsupportedOperationException("BlockingMailbox does not support this operation");
+    return queue.size();
   }
 
-  private void resumeAll() {
+  private boolean deliverAll() {
+    boolean any = false;
+
     while (!queue.isEmpty()) {
       final Message queued = queue.poll();
       if (queued != null) {
         final Actor actor = queued.actor();
         if (actor != null) {
+          any = true;
           actor.viewTestStateInitialization(null);
           queued.deliver();
         }
       }
     }
+
+    return any;
   }
 }
