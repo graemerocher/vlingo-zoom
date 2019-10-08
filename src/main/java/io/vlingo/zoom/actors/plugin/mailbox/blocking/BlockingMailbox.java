@@ -77,8 +77,10 @@ public class BlockingMailbox implements Mailbox {
       return;
     }
 
+//    System.out.println("mailbox 3: " + message);
+
     try {
-      boolean deliver = false;
+      boolean deliver = true;
 
       while (deliver) {
         if (delivering.compareAndSet(false, true)) {
@@ -86,6 +88,7 @@ public class BlockingMailbox implements Mailbox {
         }
         deliver = false;
       }
+      delivering.set(false);
     } catch (Throwable t) {
       throw new RuntimeException(t.getMessage(), t);
     }
