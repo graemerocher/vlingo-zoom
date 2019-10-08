@@ -8,23 +8,44 @@
 package io.vlingo.zoom.actors;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import io.vlingo.actors.World;
+import io.vlingo.zoom.actors.TestRequestProtocol.TestResponseProtocol;
 
 public class MessagingTest {
+  private World world;
 
   @Test
   public void testThatActorMessagesDeliver() {
-    final World world = Boot.start("test-messaging");
-
-    final TestProtocol test = world.actorFor(TestProtocol.class, TestProtocolActor.class);
+    final TestDeliveryProtocol test = world.actorFor(TestDeliveryProtocol.class, TestDeliveryProtocolActor.class);
 
     test.reactTo();
     test.reactTo(1, 2, 3);
     test.reactTo("Hello, World!");
 
     test.reactions().andThenConsume(reactions -> assertEquals(3, reactions.size()));
+  }
+
+  @Test
+  public void testThatRequestResponseDelivers() {
+    final TestRequestProtocol requestOf = world.actorFor(TestRequestProtocol.class, TestRequestProtocolActor.class);
+    final TestResponseProtocol respondTo = world.actorFor(TestResponseProtocol.class, TestResponseProtocolActor.class, requestOf);
+
+    respondTo.total().andThenConsume(value -> assertTrue(10 >= value));
+  }
+
+  @Before
+  public void setUp() {
+    world = Boot.start("test-messaging");
+  }
+
+  @After
+  public void tearDown() {
+    world.terminate();
   }
 }
