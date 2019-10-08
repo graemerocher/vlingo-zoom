@@ -13,10 +13,10 @@ import java.util.List;
 import io.vlingo.actors.Actor;
 import io.vlingo.common.Completes;
 
-public class TestProtocolActor extends Actor implements TestProtocol {
+public class TestDeliveryProtocolActor extends Actor implements TestDeliveryProtocol {
   private final List<String> reactions;
 
-  public TestProtocolActor() {
+  public TestDeliveryProtocolActor() {
     this.reactions = new ArrayList<>();
   }
 

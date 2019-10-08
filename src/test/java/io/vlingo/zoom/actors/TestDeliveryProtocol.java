@@ -11,7 +11,7 @@ import java.util.List;
 
 import io.vlingo.common.Completes;
 
-public interface TestProtocol {
+public interface TestDeliveryProtocol {
   void reactTo();
   void reactTo(final int x, final int y, final int z);
   void reactTo(final String text);
