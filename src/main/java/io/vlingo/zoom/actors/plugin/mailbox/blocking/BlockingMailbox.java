@@ -89,6 +89,12 @@ public class BlockingMailbox implements Mailbox {
         deliver = false;
       }
     } catch (Throwable t) {
+      // should never happen because message
+      // delivery is protected by supervision,
+      // although it could be a mailbox problem
+      if (delivering.get()) {
+        delivering.set(false);
+      }
       throw new RuntimeException(t.getMessage(), t);
     }
   }
