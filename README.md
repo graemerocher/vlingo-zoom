@@ -17,7 +17,7 @@ The vlingo/PLATFORM adoption accelerator for Java and other JVM languages.
     <dependency>
       <groupId>io.vlingo</groupId>
       <artifactId>vlingo-zoom</artifactId>
-      <version>0.9.0-RC1</version>
+      <version>0.9.1-RC2</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>
@@ -25,7 +25,7 @@ The vlingo/PLATFORM adoption accelerator for Java and other JVM languages.
 
 ```gradle
 dependencies {
-    compile 'io.vlingo:vlingo-zoom:0.9.0-RC1'
+    compile 'io.vlingo:vlingo-zoom:0.9.1-RC2'
 }
 
 repositories {
