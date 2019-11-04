@@ -1,6 +1,7 @@
 package io.vlingo;
 
 import io.micronaut.context.ApplicationContext;
+import io.micronaut.context.LifeCycle;
 import io.micronaut.context.annotation.Context;
 import io.micronaut.runtime.ApplicationConfiguration;
 import io.micronaut.runtime.server.EmbeddedServer;
@@ -14,6 +15,7 @@ import io.vlingo.resource.Endpoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -40,25 +42,7 @@ public class VlingoServer implements EmbeddedServer {
         this.applicationConfiguration = applicationConfiguration;
         this.stage = scene.getWorld().stage();
         this.scene = scene;
-        this.resources = endpoints.map(Endpoint::getResource)
-                .toArray(Resource[]::new);
-
-        // Start the server with auto-configured settings
-        this.server = Server.startWith(stage, Resources.are(resources),
-                scene.getServerConfiguration().getPort().intValue(),
-                new Configuration.Sizing(scene.getServerConfiguration()
-                        .getProcessorsConfiguration().getPoolSize(),
-                        scene.getServerConfiguration().getDispatchersConfiguration().getPoolSize(),
-                        scene.getServerConfiguration().getMaxBufferPoolSize(),
-                        scene.getServerConfiguration().getMaxMessageSize()),
-                new Configuration.Timing(scene.getServerConfiguration()
-                        .getActorsConfiguration().getProbeInterval(),
-                        scene.getServerConfiguration().getActorsConfiguration().getRequestMissingTimeout()));
-
-        this.isRunning = true;
-
-        log.info(ServerConfiguration.getBanner());
-        log.info(String.format("Service: started at http://localhost:%d", scene.getServerConfiguration().getPort()));
+        this.resources = endpoints.map(Endpoint::getResource).toArray(Resource[]::new);
     }
 
     public Server getServer() {
@@ -91,11 +75,12 @@ public class VlingoServer implements EmbeddedServer {
     @Override
     public URL getURL() {
         try {
-            return new URL(getScheme(), getHost(), getPort(), "/");
+            return getURI().toURL();
         } catch (MalformedURLException e) {
             e.printStackTrace();
-            return null;
         }
+
+        return null;
     }
 
     @Override
@@ -119,9 +104,54 @@ public class VlingoServer implements EmbeddedServer {
     }
 
     @Override
-    public EmbeddedServer stop() {
-        server.stop();
-        isRunning = false;
+    public @Nonnull
+    VlingoServer start() {
+        if (!isRunning) {
+            // Start the server with auto-configured settings
+            this.server = Server.startWith(stage, Resources.are(resources),
+                    scene.getServerConfiguration().getPort().intValue(),
+                    new Configuration.Sizing(scene.getServerConfiguration()
+                            .getProcessorsConfiguration().getPoolSize(),
+                            scene.getServerConfiguration().getDispatchersConfiguration().getPoolSize(),
+                            scene.getServerConfiguration().getMaxBufferPoolSize(),
+                            scene.getServerConfiguration().getMaxMessageSize()),
+                    new Configuration.Timing(scene.getServerConfiguration()
+                            .getActorsConfiguration().getProbeInterval(),
+                            scene.getServerConfiguration().getActorsConfiguration().getRequestMissingTimeout()));
+            isRunning = true;
+            log.info(ServerConfiguration.getBanner());
+            log.info("Started embedded Vlingo Zoom server at " + getURI().toASCIIString());
+        } else {
+            throw new RuntimeException("A Vlingo Zoom server is already running in the current Micronaut context");
+        }
         return this;
+    }
+
+    @Override
+    public @Nonnull
+    VlingoServer stop() {
+        if (isRunning) {
+            server.stop();
+            isRunning = false;
+            log.info("Stopped embedded Vlingo Zoom server at " + getURI().toASCIIString());
+        } else {
+            throw new RuntimeException("A Vlingo Zoom server is not running in the current Micronaut context");
+        }
+        return this;
+    }
+
+    @Override
+    public void close() {
+        if (!this.getStage().isStopped())
+            this.getStage().stop();
+        this.getStage().world().terminate();
+    }
+
+
+    @Override
+    public @Nonnull
+    LifeCycle refresh() {
+        this.stop();
+        return this.start();
     }
 }
