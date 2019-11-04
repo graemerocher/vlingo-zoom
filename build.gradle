@@ -5,6 +5,11 @@ buildscript {
         }
     }
 }
+
+task assemble {
+    dependsOn gradle.includedBuild('vlingo-zoom-server').task(":install")
+}
+
 subprojects { project ->
     apply plugin: "java"
 
