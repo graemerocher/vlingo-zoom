@@ -27,7 +27,7 @@
         },
         {
             "includePattern": "build/poms/pom(.*).xml",
-            "uploadPattern": "/io/vlingo/vlingo-zoom-server/0.9.1-RC2/vlingo-zoom-server-0.9.1-RC2.pom",
+            "uploadPattern": "/io/vlingo/vlingo-zoom-server/0.1.1-SNAPSHOT/vlingo-zoom-server-0.1.1-SNAPSHOT.pom",
             "matrixParams": {
                 "override": 1
             }
