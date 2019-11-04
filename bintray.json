@@ -13,20 +13,20 @@
     },
 
     "version": {
-        "name": "0.9.1-RC2",
+        "name": "0.1.1-SNAPSHOT",
         "gpgSign": true
     },
 
     "files": [
         {
-            "includePattern": "target/(.*).jar",
-            "uploadPattern": "/io/vlingo/vlingo-zoom-server/0.9.1-RC2/$1.jar",
+            "includePattern": "build/libs/(.*).jar",
+            "uploadPattern": "/io/vlingo/vlingo-zoom-server/0.1.1-SNAPSHOT/$1.jar",
             "matrixParams": {
                 "override": 1
             }
         },
         {
-            "includePattern": "pom.xml",
+            "includePattern": "build/poms/pom(.*).xml",
             "uploadPattern": "/io/vlingo/vlingo-zoom-server/0.9.1-RC2/vlingo-zoom-server-0.9.1-RC2.pom",
             "matrixParams": {
                 "override": 1
