@@ -1,0 +1,52 @@
+plugins {
+    id "com.github.johnrengelman.shadow" version "5.0.0"
+    id "application"
+    id "net.ltgt.apt-eclipse" version "0.21"
+}
+
+group = 'io.vlingo.examples'
+version = '1.0.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    maven { url "https://jcenter.bintray.com" }
+    mavenLocal()
+}
+
+configurations {
+    developmentOnly
+}
+
+dependencies {
+    annotationProcessor "io.micronaut:micronaut-inject-java:$micronautVersion"
+    annotationProcessor "io.micronaut:micronaut-validation:$micronautVersion"
+    compile "io.micronaut.configuration:micronaut-hibernate-validator:1.2.0"
+    compile "io.micronaut:micronaut-runtime:$micronautVersion"
+    compile "io.micronaut.configuration:micronaut-hibernate-jpa:1.2.0"
+    compile "io.micronaut.configuration:micronaut-jdbc-hikari:1.2.0"
+    compile "io.vlingo:vlingo-zoom-server:$zoomVersion"
+    runtimeOnly "ch.qos.logback:logback-classic:1.2.3"
+    runtimeOnly "com.h2database:h2:1.4.199"
+    testAnnotationProcessor platform("io.micronaut:micronaut-bom:$micronautVersion")
+    testAnnotationProcessor "io.micronaut:micronaut-inject-java:$micronautVersion"
+    testRuntime "io.vlingo:vlingo-zoom-server:$zoomVersion"
+}
+
+test.classpath += configurations.developmentOnly
+
+mainClassName = "io.examples.AccountApplication"
+// use JUnit 5 platform
+test {
+    useJUnitPlatform()
+}
+
+shadowJar {
+    mergeServiceFiles()
+}
+
+run.classpath += configurations.developmentOnly
+run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote')
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+    options.compilerArgs.add('-parameters')
+}
