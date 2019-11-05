@@ -29,7 +29,11 @@ public interface Endpoint {
     }
 
     default Completes<Response> getResponse(Response.Status status, Supplier<?> handle) {
-        String body = new GsonBuilder().setPrettyPrinting().create().toJson(handle.get());
+        String body = new GsonBuilder()
+                .setPrettyPrinting()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+                .create()
+                .toJson(handle.get());
         Header.Headers<ResponseHeader> headers =
                 Header.Headers.of(ResponseHeader.contentType(ContentMediaType.Json().toString()));
         Response response = of(status, headers, body);

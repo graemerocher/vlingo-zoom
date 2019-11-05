@@ -94,14 +94,12 @@ public class AccountRepository implements JpaRepository<Long, Account> {
      *
      * @param id      is the entity identifier of type {@link Long} to lookup before updating any its fields.
      * @param account is the entity model containing the fields other than its identifier that will be updated.
-     * @return the number of fields that were successfully updated on the entity of type {@link Account}.
+     * @return the updated {@link Account} entity.
      */
     @Override
     @Transactional
-    public int update(@NotNull Long id, @NotNull Account account) {
-        return entityManager.createQuery("UPDATE Account a SET accountNumber = :accountNumber where id = :id")
-                .setParameter("id", account.getId())
-                .setParameter("accountNumber", account.getAccountNumber())
-                .executeUpdate();
+    public Account update(@NotNull Long id, @NotNull Account account) {
+        account.setId(id);
+        return save(account);
     }
 }

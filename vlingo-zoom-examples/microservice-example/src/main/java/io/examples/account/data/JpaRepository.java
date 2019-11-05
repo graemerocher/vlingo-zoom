@@ -50,5 +50,5 @@ public interface JpaRepository<ID, T> {
      * @param entity is the entity model containing the fields other than its identifier that will be updated.
      * @return the number of fields that were successfully updated on the entity of type {@link T}.
      */
-    int update(@NotNull ID id, @NotNull T entity);
+    T update(@NotNull ID id, @NotNull T entity);
 }

@@ -4,33 +4,39 @@ import io.examples.account.data.BaseEntity;
 
 import javax.persistence.*;
 
+/**
+ * This is a simple {@link Address} value object and entity.
+ *
+ * @author Kenny Bastani
+ * @see Account
+ */
 @Entity
 public class Address extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
     private String street1;
-
     private String street2;
-
     private String state;
-
     private String city;
-
     private String country;
-
     private Integer zipCode;
 
     @Enumerated(EnumType.STRING)
     private AddressType addressType;
 
+    /**
+     * Instantiates a new {@link Address} entity.
+     */
     public Address() {
     }
 
-    public Address(String street1, String street2, String state, String city,
-                   String country, AddressType addressType, Integer zipCode) {
+    /**
+     * Instantiates a new {@link Address} entity with overloaded arguments.
+     */
+    public Address(String street1, String street2, String state, String city, String country, AddressType addressType,
+                   Integer zipCode) {
         this.street1 = street1;
         this.street2 = street2;
         this.state = state;
@@ -40,10 +46,20 @@ public class Address extends BaseEntity {
         this.zipCode = zipCode;
     }
 
+    /**
+     * Get the {@link Address} entity's unique identifier.
+     *
+     * @return a unique identifier for the address.
+     */
     public Long getId() {
         return id;
     }
 
+    /**
+     * Set the {@link Address} identity for this entity.
+     *
+     * @param id is a unique identifier for the address.
+     */
     public void setId(Long id) {
         this.id = id;
     }

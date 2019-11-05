@@ -4,6 +4,13 @@ import io.examples.account.data.BaseEntity;
 
 import javax.persistence.*;
 
+/**
+ * A {@link CreditCard} belonging to a customer {@link Account} is used for processing payments.
+ *
+ * @author Kenny Bastani
+ * @see Account
+ * @see CreditCardType
+ */
 @Entity
 public class CreditCard extends BaseEntity {
 
