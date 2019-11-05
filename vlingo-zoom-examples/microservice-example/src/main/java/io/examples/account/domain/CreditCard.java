@@ -7,9 +7,6 @@ import javax.persistence.*;
 @Entity
 public class CreditCard extends BaseEntity {
 
-    public CreditCard() {
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -18,6 +15,9 @@ public class CreditCard extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private CreditCardType type;
+
+    public CreditCard() {
+    }
 
     public CreditCard(String number, CreditCardType type) {
         this.number = number;

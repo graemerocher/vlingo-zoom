@@ -7,9 +7,6 @@ import javax.persistence.*;
 @Entity
 public class Address extends BaseEntity {
 
-    public Address() {
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -28,6 +25,9 @@ public class Address extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private AddressType addressType;
+
+    public Address() {
+    }
 
     public Address(String street1, String street2, String state, String city,
                    String country, AddressType addressType, Integer zipCode) {

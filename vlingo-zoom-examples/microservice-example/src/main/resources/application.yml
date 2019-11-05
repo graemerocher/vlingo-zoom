@@ -1,7 +1,7 @@
 application:
   name: "account-service"
 server:
-  port: 8082
+  port: 8080
   maxBufferPoolSize: 100
   maxMessageSize: 131072
   dispatchers:
