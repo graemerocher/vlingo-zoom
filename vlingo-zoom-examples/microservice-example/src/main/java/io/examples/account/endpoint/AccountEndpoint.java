@@ -31,7 +31,7 @@ public class AccountEndpoint implements Endpoint {
     /**
      * Creates a new instance of the {@link AccountEndpoint} with a dependency injected {@link AccountService}.
      *
-     * @param accountService is anti-corruption layer the exposes service operations on the {@link Account} aggregate.
+     * @param accountService is anti-corruption layer that exposes service operations on the {@link Account} aggregate.
      */
     public AccountEndpoint(AccountService accountService) {
         this.accountService = accountService;
