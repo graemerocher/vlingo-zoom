@@ -1,41 +1,25 @@
 package io.examples.account.endpoint;
 
 import io.examples.account.domain.Account;
-import io.examples.account.domain.AccountService;
 import io.vlingo.annotations.Resource;
+import io.vlingo.common.Completes;
+import io.vlingo.http.Response;
 import io.vlingo.http.resource.RequestHandler;
-import io.vlingo.http.resource.RequestHandler1.Handler1;
-import io.vlingo.http.resource.RequestHandler2;
 import io.vlingo.resource.Endpoint;
 
-import static io.vlingo.http.Response.Status.*;
-import static io.vlingo.http.resource.ResourceBuilder.*;
-
 /**
- * This {@link AccountEndpoint} exposes a REST HTTP API that maps resource request-response handlers to operations
- * contained in the {@link AccountService}. This grouping of API resources is semantically versioned and allows
- * you to more easily evolve your API definition without breaking consumers.
+ * The {@link AccountEndpoint} describes a base REST API contract that is used to evolve versions of your API without
+ * breaking consumers.
  * <p>
- * This {@link Endpoint} forms an anti-corruption layer between consuming services and this microservice's
- * {@link Account} API.
+ * By implementing this interface and marking it with the {@link Resource} annotation, you can
+ * override this base endpoint definition with your versioned changes. By overriding the {@link RequestHandler[]} in
+ * Endpoint.getRequestHandlers(), you can serve different versions of your REST API.
  *
  * @author Kenny Bastani
+ * @see io.examples.account.endpoint.v1.AccountResource
  */
-@Resource
-public class AccountEndpoint implements Endpoint {
-
-    private static final String ENDPOINT_VERSION = "1.0.0";
-    private static final String ENDPOINT_NAME = "Accounts REST API";
-    private final AccountService accountService;
-
-    /**
-     * Creates a new instance of the {@link AccountEndpoint} with a dependency injected {@link AccountService}.
-     *
-     * @param accountService is anti-corruption layer that exposes service operations on the {@link Account} aggregate.
-     */
-    public AccountEndpoint(AccountService accountService) {
-        this.accountService = accountService;
-    }
+public interface AccountEndpoint extends Endpoint {
+    String ENDPOINT_NAME = "Account";
 
     /**
      * Get the full name and version of this {@link Endpoint}.
@@ -43,53 +27,47 @@ public class AccountEndpoint implements Endpoint {
      * @return a {@link String} representing the full name and semantic version of this {@link Endpoint} definition.
      */
     @Override
-    public String getName() {
-        return AccountEndpoint.ENDPOINT_NAME + " v" + AccountEndpoint.ENDPOINT_VERSION;
+    default String getName() {
+        return ENDPOINT_NAME;
     }
 
     /**
-     * Get the semantic version of this {@link Endpoint}.
+     * Find all {@link Account} entities.
      *
-     * @return a {@link String} representing the semantic version of this HTTP {@link Endpoint} definition.
+     * @return a {@link Completes<Response>} with the JSON result.
      */
-    public static String getEndpointVersion() {
-        return ENDPOINT_VERSION;
-    }
+    Completes<Response> findAllAccounts();
 
     /**
-     * Get an array of {@link RequestHandler}s that expose HTTP mappings on commands in the {@link AccountService}.
+     * Find an {@link Account} entity by its unique identifier.
      *
-     * @return an array of {@link RequestHandler}s.
+     * @param id is the identifier of the {@link Account}
+     * @return a {@link Completes<Response>} with the JSON result.
      */
-    @Override
-    public RequestHandler[] getHandlers() {
-        return new RequestHandler[]{
-                get("/accounts")
-                        .handle(() ->
-                                getResponse(Ok, accountService::getAccounts))
-                        .onError(this::getErrorResponse),
-                get("/accounts/{id}")
-                        .param(Long.class)
-                        .handle((Handler1<Long>) (id) ->
-                                getResponse(Ok, () -> accountService.getAccount(id)))
-                        .onError(this::getErrorResponse),
-                post("/accounts")
-                        .body(Account.class)
-                        .handle((Handler1<Account>) account ->
-                                getResponse(Created, () -> accountService.createAccount(account)))
-                        .onError(this::getErrorResponse),
-                put("/accounts/{id}")
-                        .param(Long.class)
-                        .body(Account.class)
-                        .handle((RequestHandler2.Handler2<Long, Account>) (id, account) ->
-                                getResponse(Ok, () -> accountService.updateAccount(id, account)))
-                        .onError(this::getErrorResponse),
-                delete("/accounts/{id}")
-                        .param(Long.class)
-                        .handle((Handler1<Long>) (id) ->
-                                getResponse(NoContent, () -> accountService.deleteAccount(id)))
-                        .onError(this::getErrorResponse)
+    Completes<Response> findAccountById(Long id);
 
-        };
-    }
+    /**
+     * Create a new {@link Account} entity.
+     *
+     * @param account is the {@link Account} to create.
+     * @return a {@link Completes<Response>} with the JSON result.
+     */
+    Completes<Response> createAccount(Account account);
+
+    /**
+     * Update the {@link Account} with the unique identifier.
+     *
+     * @param id      is the unique identifier of the {@link Account}.
+     * @param account is the {@link Account} entity model with the fields that will be updated.
+     * @return a {@link Completes<Response>} with the JSON result.
+     */
+    Completes<Response> updateAccount(Long id, Account account);
+
+    /**
+     * Delete an {@link Account} with its unique identifier.
+     *
+     * @param id is the unique identifier of the {@link Account}.
+     * @return a {@link Completes<Response>} with the JSON result.
+     */
+    Completes<Response> deleteAccount(Long id);
 }

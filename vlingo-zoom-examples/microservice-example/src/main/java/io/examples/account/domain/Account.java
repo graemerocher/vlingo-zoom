@@ -1,6 +1,7 @@
 package io.examples.account.domain;
 
 import io.examples.account.data.BaseEntity;
+import io.examples.account.domain.context.AccountContext;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -8,7 +9,7 @@ import java.util.Set;
 
 /**
  * The {@link Account} is the entity representation of an aggregate for a customer's account. This class is used
- * for both persistence and business logic that is exposed and controlled from the {@link AccountService}.
+ * for both persistence and business logic that is exposed and controlled from the {@link AccountContext}.
  *
  * @author Kenny Bastani
  */

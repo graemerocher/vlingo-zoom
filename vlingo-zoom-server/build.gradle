@@ -14,20 +14,11 @@ group = 'io.vlingo'
 version = '0.1.1-SNAPSHOT'
 
 dependencies {
+    annotationProcessor "io.micronaut:micronaut-inject-java:$micronautVersion"
+    annotationProcessor "io.micronaut:micronaut-validation:$micronautVersion"
+    implementation "io.micronaut:micronaut-inject-java:$micronautVersion"
+    implementation "io.micronaut:micronaut-validation:$micronautVersion"
     compile "io.micronaut:micronaut-runtime:$micronautVersion"
     compile "io.vlingo:vlingo-http:$vlingoVersion"
-    annotationProcessor "io.micronaut:micronaut-inject-java:$micronautVersion"
-    testAnnotationProcessor "io.micronaut:micronaut-inject-java:$micronautVersion"
-    testRuntime "io.vlingo:vlingo-zoom-server"
-    testRuntime 'ch.qos.logback:logback-classic:1.0.13'
-}
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            artifact jar {
-                classifier "dist"
-            }
-        }
-    }
+    compile "io.vlingo:vlingo-actors:$vlingoVersion"
 }

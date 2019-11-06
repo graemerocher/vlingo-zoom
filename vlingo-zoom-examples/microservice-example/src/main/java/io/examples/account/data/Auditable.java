@@ -8,7 +8,6 @@ import java.sql.Timestamp;
  *
  * @author Kenny Bastani
  * @see BaseEntity
- * @see AuditableListener
  */
 public interface Auditable {
 

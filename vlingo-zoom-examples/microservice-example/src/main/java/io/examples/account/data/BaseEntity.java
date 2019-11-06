@@ -1,22 +1,25 @@
 package io.examples.account.data;
 
-import javax.persistence.EntityListeners;
+import io.micronaut.data.annotation.DateCreated;
+import io.micronaut.data.annotation.DateUpdated;
+
 import javax.persistence.MappedSuperclass;
 import java.sql.Timestamp;
 
 /**
  * The {@link BaseEntity} describes an {@link Auditable} JPA entity that is mapped to a concrete class that extends
- * this implementation. Persistence events for created and updated will be handled by {@link AuditableListener}.
+ * this implementation.
  *
  * @author Kenny Bastani
  * @see Auditable
- * @see AuditableListener
  */
 @MappedSuperclass
-@EntityListeners(AuditableListener.class)
 public class BaseEntity implements Auditable {
 
+    @DateCreated
     private Timestamp dateCreated;
+
+    @DateUpdated
     private Timestamp lastUpdated;
 
     /**

@@ -22,9 +22,7 @@ public class Address extends BaseEntity {
     private String city;
     private String country;
     private Integer zipCode;
-
-    @Enumerated(EnumType.STRING)
-    private AddressType addressType;
+    private AddressType type;
 
     /**
      * Instantiates a new {@link Address} entity.
@@ -35,14 +33,14 @@ public class Address extends BaseEntity {
     /**
      * Instantiates a new {@link Address} entity with overloaded arguments.
      */
-    public Address(String street1, String street2, String state, String city, String country, AddressType addressType,
+    public Address(String street1, String street2, String state, String city, String country, AddressType type,
                    Integer zipCode) {
         this.street1 = street1;
         this.street2 = street2;
         this.state = state;
         this.city = city;
         this.country = country;
-        this.addressType = addressType;
+        this.type = type;
         this.zipCode = zipCode;
     }
 
@@ -112,12 +110,12 @@ public class Address extends BaseEntity {
         this.zipCode = zipCode;
     }
 
-    public AddressType getAddressType() {
-        return addressType;
+    public AddressType getType() {
+        return type;
     }
 
-    public void setAddressType(AddressType addressType) {
-        this.addressType = addressType;
+    public void setType(AddressType type) {
+        this.type = type;
     }
 
     @Override
@@ -130,7 +128,19 @@ public class Address extends BaseEntity {
                 ", city='" + city + '\'' +
                 ", country='" + country + '\'' +
                 ", zipCode=" + zipCode +
-                ", addressType=" + addressType +
+                ", type=" + type +
                 '}';
+    }
+
+    /**
+     * The {@link AddressType} represents the type of address that is assigned to an {@link Account}.
+     *
+     * @author Kenny Bastani
+     * @see Account
+     * @see Address
+     */
+    public enum AddressType {
+        SHIPPING,
+        BILLING
     }
 }

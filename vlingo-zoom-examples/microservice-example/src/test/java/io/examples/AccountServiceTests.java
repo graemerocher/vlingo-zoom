@@ -1,8 +1,9 @@
 package io.examples;
 
-import io.examples.account.domain.*;
+import io.examples.account.domain.Account;
+import io.examples.account.domain.Address;
+import io.examples.account.domain.CreditCard;
 import io.micronaut.core.type.Argument;
-import io.micronaut.http.HttpHeaders;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
@@ -25,9 +26,10 @@ public class AccountServiceTests {
     EmbeddedServer server;
 
     @Inject
-    @Client("/")
+    @Client("/v1")
     HttpClient client;
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testAccountCrudOperations() {
 
@@ -37,14 +39,14 @@ public class AccountServiceTests {
         Account account = new Account("12345");
 
         // Create a new credit card for the account
-        CreditCard creditCard = new CreditCard("1234567801234567", CreditCardType.VISA);
+        CreditCard creditCard = new CreditCard("1234567801234567", CreditCard.CreditCardType.VISA);
 
         // Add the credit card to the customer's account
         account.getCreditCards().add(creditCard);
 
         // Create a new shipping address for the customer
         Address address = new Address("1600 Pennsylvania Ave NW", null,
-                "DC", "Washington", "United States", AddressType.SHIPPING, 20500);
+                "DC", "Washington", "United States", Address.AddressType.SHIPPING, 20500);
 
         // Add address to the customer's account
         account.getAddresses().add(address);
@@ -89,18 +91,5 @@ public class AccountServiceTests {
             response = client.toBlocking().exchange(request);
             assertEquals(HttpStatus.NO_CONTENT, response.getStatus());
         }
-    }
-
-    protected Long entityId(HttpResponse response) {
-        String path = "/accounts/";
-        String value = response.header(HttpHeaders.LOCATION);
-        if (value == null) {
-            return null;
-        }
-        int index = value.indexOf(path);
-        if (index != -1) {
-            return Long.valueOf(value.substring(index + path.length()));
-        }
-        return null;
     }
 }

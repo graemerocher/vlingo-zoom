@@ -1,23 +1,29 @@
-package io.examples.account.domain;
+package io.examples.account.domain.context;
 
+import io.examples.account.domain.Account;
 import io.examples.account.endpoint.AccountEndpoint;
+import io.examples.account.endpoint.v1.AccountResource;
 import io.examples.account.repository.AccountRepository;
+import io.reactivex.Observable;
 
 import javax.inject.Singleton;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
- * The {@link AccountService} exposes operations and business logic that pertains to the {@link Account} entity and
- * aggregate. This service forms an anti-corruption layer that is exposed by the {@link AccountEndpoint}.
+ * The {@link AccountContext} exposes operations and business logic that pertains to the {@link Account} entity and
+ * aggregate root. This service forms an anti-corruption layer that is exposed to consumers using the
+ * {@link AccountResource}.
  *
  * @author Kenny Bastani
+ * @see AccountEndpoint
  */
 @Singleton
-public class AccountService {
+public class AccountContext implements AccountService {
 
     private final AccountRepository accountRepository;
 
-    public AccountService(AccountRepository accountRepository) {
+    public AccountContext(AccountRepository accountRepository) {
         this.accountRepository = accountRepository;
     }
 
@@ -26,8 +32,9 @@ public class AccountService {
      *
      * @return a list of {@link Account} entities.
      */
+    @Override
     public List<Account> getAccounts() {
-        return accountRepository.findAll();
+        return Observable.fromIterable(accountRepository.findAll()).toList().blockingGet();
     }
 
     /**
@@ -36,6 +43,7 @@ public class AccountService {
      * @param id is the unique identifier of the {@link Account}.
      * @return the {@link Account} or throw a {@link RuntimeException} if one does not exist.
      */
+    @Override
     public Account getAccount(Long id) {
         return accountRepository.findById(id).orElseThrow(() ->
                 new RuntimeException("Account with id[" + id + "] does not exist"));
@@ -47,6 +55,7 @@ public class AccountService {
      * @param account is the {@link Account} to create.
      * @return the created {@link Account}.
      */
+    @Override
     public Account createAccount(Account account) {
         return accountRepository.save(account);
     }
@@ -58,8 +67,9 @@ public class AccountService {
      * @param account is the {@link Account} entity containing the fields to update.
      * @return the updated {@link Account}.
      */
-    public Account updateAccount(Long id, Account account) {
-        accountRepository.update(id, account);
+    @Override
+    public Account updateAccount(@NotNull Long id, @NotNull Account account) {
+        accountRepository.update(id, account.getAccountNumber());
         return getAccount(id);
     }
 
@@ -68,6 +78,7 @@ public class AccountService {
      *
      * @param id is the unique identifier of the {@link Account} that is to be deleted.
      */
+    @Override
     public void deleteAccount(Long id) {
         accountRepository.deleteById(id);
     }

@@ -2,9 +2,8 @@ package io.vlingo.config;
 
 import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.context.annotation.ConfigurationProperties;
+import io.micronaut.context.annotation.Context;
 import io.micronaut.context.annotation.Primary;
-
-import javax.inject.Inject;
 
 /**
  * The {@link ServerConfiguration} class loads application properties from the application.yml file on the
@@ -13,6 +12,7 @@ import javax.inject.Inject;
 @ConfigurationProperties(ServerConfiguration.PREFIX)
 @Primary
 @BootstrapContextCompatible
+@Context
 public class ServerConfiguration {
 
     public static final String PREFIX = "server";
@@ -21,14 +21,17 @@ public class ServerConfiguration {
     private Integer maxBufferPoolSize;
     private Integer maxMessageSize;
 
-    @Inject
     private DispatchersConfiguration dispatchersConfiguration;
-
-    @Inject
     private ProcessorsConfiguration processorsConfiguration;
-
-    @Inject
     private ActorsConfiguration actorsConfiguration;
+
+    public ServerConfiguration(DispatchersConfiguration dispatchersConfiguration,
+                               ProcessorsConfiguration processorsConfiguration,
+                               ActorsConfiguration actorsConfiguration) {
+        this.dispatchersConfiguration = dispatchersConfiguration;
+        this.processorsConfiguration = processorsConfiguration;
+        this.actorsConfiguration = actorsConfiguration;
+    }
 
     public Long getPort() {
         return port;
@@ -86,6 +89,7 @@ public class ServerConfiguration {
 
     @ConfigurationProperties(DispatchersConfiguration.PREFIX)
     @BootstrapContextCompatible
+    @Context
     public static class DispatchersConfiguration {
 
         public static final String PREFIX = "dispatchers";
@@ -130,6 +134,7 @@ public class ServerConfiguration {
 
     @ConfigurationProperties(ProcessorsConfiguration.PREFIX)
     @BootstrapContextCompatible
+    @Context
     public static class ProcessorsConfiguration {
 
         public static final String PREFIX = "processors";
@@ -147,6 +152,7 @@ public class ServerConfiguration {
 
     @ConfigurationProperties(ActorsConfiguration.PREFIX)
     @BootstrapContextCompatible
+    @Context
     public static class ActorsConfiguration {
 
         public static final String PREFIX = "actors";

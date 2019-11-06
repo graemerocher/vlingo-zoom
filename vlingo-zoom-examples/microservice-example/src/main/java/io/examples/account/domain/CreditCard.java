@@ -19,8 +19,6 @@ public class CreditCard extends BaseEntity {
     private Long id;
 
     private String number;
-
-    @Enumerated(EnumType.STRING)
     private CreditCardType type;
 
     public CreditCard() {
@@ -62,5 +60,17 @@ public class CreditCard extends BaseEntity {
                 ", number='" + number + '\'' +
                 ", type=" + type +
                 '}';
+    }
+
+    /**
+     * The {@link CreditCardType} is used to categorized the provider of a {@link CreditCard} for processing payments.
+     *
+     * @author Kenny Bastani
+     * @see CreditCard
+     */
+    public enum CreditCardType {
+        VISA,
+        MASTERCARD,
+        AMERICAN_EXPRESS
     }
 }

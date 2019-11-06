@@ -5,7 +5,6 @@ import io.micronaut.context.LifeCycle;
 import io.micronaut.context.annotation.Context;
 import io.micronaut.runtime.ApplicationConfiguration;
 import io.micronaut.runtime.server.EmbeddedServer;
-import io.vlingo.actors.Stage;
 import io.vlingo.config.ServerConfiguration;
 import io.vlingo.http.resource.Configuration;
 import io.vlingo.http.resource.Resource;
@@ -28,20 +27,18 @@ import java.util.stream.Stream;
 public class VlingoServer implements EmbeddedServer {
     private static Logger log = LoggerFactory.getLogger(VlingoServer.class);
     private Server server;
-    private Stage stage;
-    private Scene scene;
+    private VlingoScene vlingoScene;
     private Resource[] resources;
     private ApplicationContext applicationContext;
     private ApplicationConfiguration applicationConfiguration;
     private boolean isRunning = false;
 
     public VlingoServer(ApplicationContext applicationContext, ApplicationConfiguration applicationConfiguration,
-                        Scene scene, Stream<Endpoint> endpoints) {
+                        VlingoScene vlingoScene, Stream<Endpoint> endpoints) {
         // Load the world context with auto-configured settings
         this.applicationContext = applicationContext;
         this.applicationConfiguration = applicationConfiguration;
-        this.stage = scene.getWorld().stage();
-        this.scene = scene;
+        this.vlingoScene = vlingoScene;
         this.resources = endpoints.map(Endpoint::getResource).toArray(Resource[]::new);
     }
 
@@ -49,8 +46,8 @@ public class VlingoServer implements EmbeddedServer {
         return server;
     }
 
-    public Stage getStage() {
-        return stage;
+    public VlingoScene getVlingoScene() {
+        return vlingoScene;
     }
 
     public Resource[] getResources() {
@@ -59,7 +56,7 @@ public class VlingoServer implements EmbeddedServer {
 
     @Override
     public int getPort() {
-        return Math.toIntExact(scene.getServerConfiguration().getPort());
+        return Math.toIntExact(vlingoScene.getServerConfiguration().getPort());
     }
 
     @Override
@@ -107,17 +104,19 @@ public class VlingoServer implements EmbeddedServer {
     public @Nonnull
     VlingoServer start() {
         if (!isRunning) {
+            if(!vlingoScene.isRunning())
+                vlingoScene.start();
             // Start the server with auto-configured settings
-            this.server = Server.startWith(stage, Resources.are(resources),
-                    scene.getServerConfiguration().getPort().intValue(),
-                    new Configuration.Sizing(scene.getServerConfiguration()
+            this.server = Server.startWith(vlingoScene.getWorld().stage(), Resources.are(resources),
+                    vlingoScene.getServerConfiguration().getPort().intValue(),
+                    new Configuration.Sizing(vlingoScene.getServerConfiguration()
                             .getProcessorsConfiguration().getPoolSize(),
-                            scene.getServerConfiguration().getDispatchersConfiguration().getPoolSize(),
-                            scene.getServerConfiguration().getMaxBufferPoolSize(),
-                            scene.getServerConfiguration().getMaxMessageSize()),
-                    new Configuration.Timing(scene.getServerConfiguration()
+                            vlingoScene.getServerConfiguration().getDispatchersConfiguration().getPoolSize(),
+                            vlingoScene.getServerConfiguration().getMaxBufferPoolSize(),
+                            vlingoScene.getServerConfiguration().getMaxMessageSize()),
+                    new Configuration.Timing(vlingoScene.getServerConfiguration()
                             .getActorsConfiguration().getProbeInterval(),
-                            scene.getServerConfiguration().getActorsConfiguration().getRequestMissingTimeout()));
+                            vlingoScene.getServerConfiguration().getActorsConfiguration().getRequestMissingTimeout()));
             isRunning = true;
             log.info(ServerConfiguration.getBanner());
             log.info("Started embedded Vlingo Zoom server at " + getURI().toASCIIString());
@@ -132,6 +131,7 @@ public class VlingoServer implements EmbeddedServer {
     VlingoServer stop() {
         if (isRunning) {
             server.stop();
+            vlingoScene.stop();
             isRunning = false;
             log.info("Stopped embedded Vlingo Zoom server at " + getURI().toASCIIString());
         } else {
@@ -142,9 +142,8 @@ public class VlingoServer implements EmbeddedServer {
 
     @Override
     public void close() {
-        if (!this.getStage().isStopped())
-            this.getStage().stop();
-        this.getStage().world().terminate();
+        if (!this.vlingoScene.isRunning())
+            this.vlingoScene.stop();
     }
 
 
