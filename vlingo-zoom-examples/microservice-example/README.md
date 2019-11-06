@@ -67,14 +67,14 @@ If everything was a success, you should see the following terminal output.
     2019-11-06 09:46:43 [main] INFO  o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.1.0.Final}
     2019-11-06 09:46:43 [main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.H2Dialect
     2019-11-06 09:46:44 [main] INFO  io.vlingo.VlingoScene - New scene created: __defaultStage
-    2019-11-06 09:46:44 [pool-3-thread-4] INFO  io.vlingo.actors.Logger - ServerRequestResponseChannelActor: OPENING PORT: 8080
-    2019-11-06 09:46:44 [pool-3-thread-3] INFO  io.vlingo.actors.Logger - Server vlingo-http-server is listening on port: 8080 started in 47 ms
-    2019-11-06 09:46:44 [pool-3-thread-3] INFO  io.vlingo.actors.Logger - Resource: Account Endpoint Resource v1.1
-    2019-11-06 09:46:44 [pool-3-thread-3] INFO  io.vlingo.actors.Logger - Action: id=0, method=GET, uri=/v1/accounts/{id}, to=dynamic1(Long id)
-    2019-11-06 09:46:44 [pool-3-thread-3] INFO  io.vlingo.actors.Logger - Action: id=1, method=PUT, uri=/v1/accounts/{id}, to=dynamic2(Long id)
-    2019-11-06 09:46:44 [pool-3-thread-3] INFO  io.vlingo.actors.Logger - Action: id=2, method=DELETE, uri=/v1/accounts/{id}, to=dynamic3(Long id)
-    2019-11-06 09:46:44 [pool-3-thread-3] INFO  io.vlingo.actors.Logger - Action: id=3, method=GET, uri=/v1/accounts, to=dynamic4()
-    2019-11-06 09:46:44 [pool-3-thread-3] INFO  io.vlingo.actors.Logger - Action: id=4, method=POST, uri=/v1/accounts, to=dynamic5()
+    2019-11-06 09:46:44 [pool-3-thread-4] INFO  i.v.a.Logger - ServerRequestResponseChannelActor: OPENING PORT: 8080
+    2019-11-06 09:46:44 [pool-3-thread-3] INFO  i.v.a.Logger - Server vlingo-http-server is listening on port: 8080 started in 47 ms
+    2019-11-06 09:46:44 [pool-3-thread-3] INFO  i.v.a.Logger - Resource: Account Endpoint Resource v1.1
+    2019-11-06 09:46:44 [pool-3-thread-3] INFO  i.v.a.Logger - Action: id=0, method=GET, uri=/v1/accounts/{id}, to=dynamic1(Long id)
+    2019-11-06 09:46:44 [pool-3-thread-3] INFO  i.v.a.Logger - Action: id=1, method=PUT, uri=/v1/accounts/{id}, to=dynamic2(Long id)
+    2019-11-06 09:46:44 [pool-3-thread-3] INFO  i.v.a.Logger - Action: id=2, method=DELETE, uri=/v1/accounts/{id}, to=dynamic3(Long id)
+    2019-11-06 09:46:44 [pool-3-thread-3] INFO  i.v.a.Logger - Action: id=3, method=GET, uri=/v1/accounts, to=dynamic4()
+    2019-11-06 09:46:44 [pool-3-thread-3] INFO  i.v.a.Logger - Action: id=4, method=POST, uri=/v1/accounts, to=dynamic5()
     2019-11-06 09:46:44 [main] INFO  io.vlingo.VlingoServer - 
                 ░▒░▒░      _ _                    
                 ░▒░▒░     | (_)                   
