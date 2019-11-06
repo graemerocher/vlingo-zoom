@@ -1,4 +1,4 @@
-# Basic Microservice Example
+# Vlingo + Micronaut Microservice Example
 
 In this example application, you'll be introduced to the basic patterns for implementing a microservice with `vlingo-zoom-server` and `micronaut`.
 
