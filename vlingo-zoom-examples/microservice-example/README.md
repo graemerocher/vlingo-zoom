@@ -2,6 +2,36 @@
 
 In this example application, you'll be introduced to the basic patterns for implementing a microservice with `vlingo-zoom-server` and `micronaut`.
 
+## Project Structure
+
+The following tree structure is from the project's `./src/main/java` directory. Here we can see the domain entities, the endpoint definition, and the repositories for data management. 
+
+`Account Microservice`
+
+    .
+    └── io
+        └── examples
+            ├── AccountApplication.java
+            └── account
+                ├── data
+                │   ├── Auditable.java
+                │   └── BaseEntity.java (Entity Persistence)
+                ├── domain
+                │   ├── Account.java (Aggregate Root)
+                │   ├── Address.java
+                │   ├── CreditCard.java
+                │   └── context
+                │       ├── AccountContext.java (Business Logic)
+                │       └── AccountService.java (Anti-corruption Layer)
+                ├── endpoint
+                │   ├── AccountEndpoint.java (Versioned Endpoint)
+                │   └── v1
+                │       └── AccountResource.java (v1 API)
+                └── repository
+                    └── AccountRepository.java (Data Management)
+
+In addition to the tree structure above, you will find `./src/main/tests` for unit tests and `./src/main/java/resources/application.yml` for externalized configuration.
+
 ## Capabilities
 
 This microservice example will demonstrate a basic set of capabilities for building cloud-native microservices. The `vlingo-zoom` project is meant to provide you with the simplest developer abstractions for building high-performance networked applications. For building microservices, we've decided to use the JVM microframework, Micronaut. 
@@ -29,11 +59,14 @@ Vlingo provides a high-performance reactive toolkit for the JVM that is based on
 
 #### Example Capabilities (Vlingo Zoom)
 
+This microservice example demonstrates the following capabilities that are enabled by [vlingo/platform](http://docs.vlingo.io).
+
 - Reactive Client-Server Framework with [vlingo/http](https://docs.vlingo.io/vlingo-http)
 - Domain-Driven Design (DDD)
   - Example microservice starter kit for a sample domain
   - Building an anti-corruption layer
   - Evolving and versioning a REST API
+  - Using versioned endpoint definitions instead of MVC controllers
 
 ## Account Domain
 
