@@ -2,7 +2,6 @@ language: java
 dist: trusty
 script:
 - ./gradlew assemble
-- ./gradlew test
 deploy:
   provider: bintray
   file: bintray.json
