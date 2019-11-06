@@ -1,2 +1,3 @@
+rootProject.name="vlingo-zoom-parent"
 include "vlingo-zoom-server"
 include "microservice-example"

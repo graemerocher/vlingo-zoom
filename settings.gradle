@@ -1,6 +1,4 @@
-rootProject.name = 'vlingo-zoom-parent'
 includeBuild "vlingo-zoom-server"
-include "vlingo-zoom-examples"
 include "vlingo-zoom-examples:microservice-example"
 include "vlingo-zoom-examples:mailbox-example"
 include "vlingo-zoom-starters"
