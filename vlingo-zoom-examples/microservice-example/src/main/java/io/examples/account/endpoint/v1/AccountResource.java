@@ -1,8 +1,7 @@
 package io.examples.account.endpoint.v1;
 
 import io.examples.account.domain.Account;
-import io.examples.account.domain.context.AccountService;
-import io.examples.account.domain.context.AccountContext;
+import io.examples.account.domain.AccountService;
 import io.examples.account.endpoint.AccountEndpoint;
 import io.vlingo.annotations.Resource;
 import io.vlingo.common.Completes;
@@ -12,12 +11,11 @@ import io.vlingo.resource.Endpoint;
 
 import static io.vlingo.http.Response.Status.*;
 import static io.vlingo.http.resource.ResourceBuilder.*;
-import static io.vlingo.http.resource.ResourceBuilder.delete;
 
 /**
  * This {@link AccountResource} exposes a REST API that maps resource HTTP request-response handlers to operations
- * contained in the {@link AccountContext}. This {@link Endpoint} implementation forms an anti-corruption layer between
- * consuming services and this microservice's {@link AccountContext} API.
+ * contained in the {@link AccountService}. This {@link Endpoint} implementation forms an anti-corruption layer between
+ * consuming services and this microservice's {@link AccountService} API.
  * <p>
  * This resource is a versioned API definition that implements the {@link AccountEndpoint}. To fork versions, create a
  * separate implementation of the {@link AccountEndpoint} in a separate package and change the getRequestHandlers
@@ -47,7 +45,7 @@ public class AccountResource implements AccountEndpoint {
     }
 
     /**
-     * Get an array of {@link RequestHandler}s that expose HTTP mappings on commands in the {@link AccountContext}.
+     * Get an array of {@link RequestHandler}s that expose HTTP mappings on commands in the {@link AccountService}.
      *
      * @return an array of {@link RequestHandler}s.
      */

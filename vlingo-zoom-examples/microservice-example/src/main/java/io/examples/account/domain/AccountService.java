@@ -1,6 +1,5 @@
-package io.examples.account.domain.context;
+package io.examples.account.domain;
 
-import io.examples.account.domain.Account;
 import io.examples.account.endpoint.AccountEndpoint;
 import io.examples.account.endpoint.v1.AccountResource;
 import io.examples.account.repository.AccountRepository;
@@ -11,7 +10,7 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
- * The {@link AccountContext} exposes operations and business logic that pertains to the {@link Account} entity and
+ * The {@link AccountService} exposes operations and business logic that pertains to the {@link Account} entity and
  * aggregate root. This service forms an anti-corruption layer that is exposed to consumers using the
  * {@link AccountResource}.
  *
@@ -19,11 +18,11 @@ import java.util.List;
  * @see AccountEndpoint
  */
 @Singleton
-public class AccountContext implements AccountService {
+public class AccountService {
 
     private final AccountRepository accountRepository;
 
-    public AccountContext(AccountRepository accountRepository) {
+    public AccountService(AccountRepository accountRepository) {
         this.accountRepository = accountRepository;
     }
 
@@ -32,7 +31,6 @@ public class AccountContext implements AccountService {
      *
      * @return a list of {@link Account} entities.
      */
-    @Override
     public List<Account> getAccounts() {
         return Observable.fromIterable(accountRepository.findAll()).toList().blockingGet();
     }
@@ -43,7 +41,6 @@ public class AccountContext implements AccountService {
      * @param id is the unique identifier of the {@link Account}.
      * @return the {@link Account} or throw a {@link RuntimeException} if one does not exist.
      */
-    @Override
     public Account getAccount(Long id) {
         return accountRepository.findById(id).orElseThrow(() ->
                 new RuntimeException("Account with id[" + id + "] does not exist"));
@@ -55,7 +52,6 @@ public class AccountContext implements AccountService {
      * @param account is the {@link Account} to create.
      * @return the created {@link Account}.
      */
-    @Override
     public Account createAccount(Account account) {
         return accountRepository.save(account);
     }
@@ -67,7 +63,6 @@ public class AccountContext implements AccountService {
      * @param account is the {@link Account} entity containing the fields to update.
      * @return the updated {@link Account}.
      */
-    @Override
     public Account updateAccount(@NotNull Long id, @NotNull Account account) {
         accountRepository.update(id, account.getAccountNumber());
         return getAccount(id);
@@ -78,7 +73,6 @@ public class AccountContext implements AccountService {
      *
      * @param id is the unique identifier of the {@link Account} that is to be deleted.
      */
-    @Override
     public void deleteAccount(Long id) {
         accountRepository.deleteById(id);
     }

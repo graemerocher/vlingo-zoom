@@ -1,7 +1,6 @@
 package io.examples.account.domain;
 
 import io.examples.account.data.BaseEntity;
-import io.examples.account.domain.context.AccountContext;
 
 import javax.persistence.*;
 import java.util.HashSet;
