@@ -17,7 +17,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE, ElementType.METHOD})
 @Bean
 @Executable
-@Context
 @DefaultScope(Context.class)
 public @interface Resource {
 }
