@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import javax.annotation.PreDestroy;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -25,7 +26,7 @@ import java.util.stream.Stream;
  */
 @Context
 public class VlingoServer implements EmbeddedServer {
-    private static Logger log = LoggerFactory.getLogger(VlingoServer.class);
+    private static final Logger log = LoggerFactory.getLogger(VlingoServer.class);
     private Server server;
     private VlingoScene vlingoScene;
     private Resource[] resources;
@@ -104,8 +105,9 @@ public class VlingoServer implements EmbeddedServer {
     public @Nonnull
     VlingoServer start() {
         if (!isRunning) {
-            if(!vlingoScene.isRunning())
+            if(!vlingoScene.isRunning()) {
                 vlingoScene.start();
+            }
             // Start the server with auto-configured settings
             this.server = Server.startWith(vlingoScene.getWorld().stage(), Resources.are(resources),
                     vlingoScene.getServerConfiguration().getPort().intValue(),
@@ -129,28 +131,20 @@ public class VlingoServer implements EmbeddedServer {
     @Override
     public @Nonnull
     VlingoServer stop() {
+        applicationContext.stop();
+        return this;
+    }
+
+    @Override
+    @PreDestroy
+    public void close() {
         if (isRunning) {
             server.stop();
-            vlingoScene.stop();
             isRunning = false;
             log.info("Stopped embedded Vlingo Zoom server at " + getURI().toASCIIString());
         } else {
             throw new RuntimeException("A Vlingo Zoom server is not running in the current Micronaut context");
         }
-        return this;
     }
 
-    @Override
-    public void close() {
-        if (!this.vlingoScene.isRunning())
-            this.vlingoScene.stop();
-    }
-
-
-    @Override
-    public @Nonnull
-    LifeCycle refresh() {
-        this.stop();
-        return this.start();
-    }
 }
